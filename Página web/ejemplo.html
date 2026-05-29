@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Comentarios</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+    }
+    .contenedor {
+      width: 400px;
+      margin: 40px auto;
+    }
+    .comentarios, .lista-comentarios {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    input, textarea, button {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+    }
+    button {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    .comentario {
+      border-bottom: 1px solid #ddd;
+      padding: 10px 0;
+    }
+    .comentario:last-child {
+      border-bottom: none;
+    }
+    .nombre {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<div class="contenedor">
+
+  <div class="comentarios">
+    <h2>Deja tu comentario</h2>
+    <form id="formComentario">
+      <input type="text" id="nombre" placeholder="Tu nombre" required>
+      <textarea id="texto" rows="4" placeholder="Escribe tu comentario..." required></textarea>
+      <button type="submit">Enviar</button>
+    </form>
+  </div>
+
+  <div class="lista-comentarios">
+    <h3>Comentarios</h3>
+    <div id="lista"></div>
+  </div>
+
+</div>
+
+<script>
+  const form = document.getElementById("formComentario");
+  const lista = document.getElementById("lista");
+
+  // Cargar comentarios guardados
+  document.addEventListener("DOMContentLoaded", cargarComentarios);
+
+  function cargarComentarios() {
+    const comentarios = JSON.parse(localStorage.getItem("comentarios")) || [];
+    comentarios.forEach(c => mostrarComentario(c));
+  }
+
+  form.addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const nombre = document.getElementById("nombre").value;
+    const texto = document.getElementById("texto").value;
+
+    const comentario = { nombre, texto };
+
+    guardarComentario(comentario);
+    mostrarComentario(comentario);
+
+    form.reset();
+  });
+
+  function guardarComentario(comentario) {
+    const comentarios = JSON.parse(localStorage.getItem("comentarios")) || [];
+    comentarios.unshift(comentario); // lo guarda al inicio
+    localStorage.setItem("comentarios", JSON.stringify(comentarios));
+  }
+
+  function mostrarComentario(comentario) {
+    const div = document.createElement("div");
+    div.classList.add("comentario");
+
+    div.innerHTML = `
+      <div class="nombre">${comentario.nombre}</div>
+      <div class="texto">${comentario.texto}</div>
+    `;
+
+    lista.appendChild(div);
+  }
+</script>
+
+</body>
+</html>
